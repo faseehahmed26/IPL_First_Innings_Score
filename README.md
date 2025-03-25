@@ -1,80 +1,64 @@
-# Number Plate Detection System
+# IPL First Innings Score Predictor
 
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.7.0-orange)
-![Python](https://img.shields.io/badge/Python-3.9-blue)
-![EasyOCR](https://img.shields.io/badge/EasyOCR-1.4.1-green)
-![OpenCV](https://img.shields.io/badge/OpenCV-4.5.5-red)
+![Python](https://img.shields.io/badge/Python-3.8-blue)
+![Framework](https://img.shields.io/badge/Framework-Flask-red)
+![ML Library](https://img.shields.io/badge/ML_Library-Scikit_Learn-orange)
+![RMSE](https://img.shields.io/badge/RMSE-20.08-green)
+![Deployment](https://img.shields.io/badge/Deployment-Heroku-purple)
 
-A real-time license plate detection and recognition system using deep learning with TensorFlow Object Detection API and EasyOCR.
+A machine learning web application that predicts the first innings score of Indian Premier League (IPL) cricket matches based on the current match situation.
 
-![License Plate Detection Demo](https://github.com/faseehahmed26/Number-Plate-Detection/raw/main/Images/after.png)
+![Prediction Interface](https://github.com/faseehahmed26/IPL_First_Innings_Score/blob/main/Images/after.png?raw=true)
 
 ## Features
 
-- **Automatic License Plate Detection**: Identifies vehicle license plates in images and video streams
-- **Text Recognition**: Extracts alphanumeric characters from detected license plates
-- **Real-Time Processing**: Works with webcam feeds for live detection
-- **Multi-Format Export**: TensorFlow.js and TFLite exports for web and mobile deployment
-- **Confidence Filtering**: Removes low-confidence detections for improved accuracy
+- Predicts likely final score based on current match statistics
+- Considers batting team, bowling team, current score, wickets, overs, and recent performance
+- Uses optimized Ridge Regression model for accurate predictions
+- Provides results within ~20 runs RMSE of actual scores
+- Simple, user-friendly web interface
 
-## Architecture
+## Technology Used
 
-This project utilizes transfer learning with SSD MobileNet V2 FPNLite from TensorFlow Model Zoo, fine-tuned on a custom dataset of license plate images. The pipeline consists of:
+- **Machine Learning**: Ridge Regression, Lasso Regression
+- **Data Processing**: Pandas, NumPy
+- **Model Training**: Scikit-learn, GridSearchCV
+- **Web Framework**: Flask
+- **Deployment**: Heroku
+- **Frontend**: HTML, CSS, Bootstrap
 
-1. **Detection Phase**: Locates license plates in the image using the trained model
-2. **ROI Extraction**: Crops the license plate region from the larger image
-3. **Text Recognition**: Uses EasyOCR to extract the alphanumeric text
-4. **Post-Processing**: Filters results based on confidence scores and region characteristics
-5. **Storage**: Saves results to CSV with images for further analysis
+## Model Development
 
-## Getting Started
+The system uses a Ridge Regression model trained on IPL match data from 2008-2016, with matches from 2017 onwards used for testing. The model was developed through the following process:
 
-### Prerequisites
+1. **Data Preprocessing**:
+   - Filtering for consistent teams across IPL seasons
+   - Converting categorical features using one-hot encoding
+   - Temporal train-test split based on match years
 
-- Python 3.9+
-- TensorFlow 2.7.0
-- CUDA-compatible GPU (recommended for real-time processing)
+2. **Feature Engineering**:
+   - Current runs, wickets, and overs played
+   - Recent performance (runs and wickets in last 5 overs)
+   - Team matchups through one-hot encoded variables
 
-### Installation
+3. **Model Selection**:
+   - Compared Ridge and Lasso regression models
+   - Hyperparameter tuning using GridSearchCV
+   - Ridge Regression with alpha=40 performed best
+
+4. **Results**:
+   - Mean Absolute Error: 14.86 runs
+   - Root Mean Square Error: 20.08 runs
+
+## Installation and Usage
 
 ```bash
-# Clone the repository
-git clone https://github.com/faseehahmed26/Number-Plate-Detection.git
-cd Number-Plate-Detection
+# Clone repository
+git clone https://github.com/faseehahmed26/IPL_First_Innings_Score.git
+cd IPL_First_Innings_Score
 
-# Install dependencies
+# Install requirements
 pip install -r requirements.txt
-Usage
-For webcam-based detection:
+
+# Run application
 python app.py
-For processing a single image:
-# See notebook for detailed example
-image_path = 'path_to_your_image.jpg'
-detections = detect_fn(input_tensor)
-text, region = ocr_it(image, detections, 0.6, 0.6)
-print(f"Detected license plate: {text}")
-```
-Model Training
-The model was trained using the TensorFlow Object Detection API with the following configuration:
-
-Base Model: SSD MobileNet V2 FPNLite 320x320
-Training Steps: 10,000
-Batch Size: 4
-Transfer Learning: Fine-tuning from COCO pre-trained weights
-
-Project Structure
-
-Tensorflow/: Contains the TensorFlow models and workspace
-Detection_images/: Saved detection images and regions
-app.py: Main application for real-time detection
-*.ipynb: Jupyter notebooks for model training and testing
-
-Future Improvements
-
-Multi-plate detection in a single frame
-Character segmentation for improved OCR accuracy
-Integration with traffic monitoring systems
-Speed optimization for edge devices
-
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
